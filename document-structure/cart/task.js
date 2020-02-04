@@ -1,44 +1,50 @@
 const cart = document.querySelector('.cart__products');
-const quantity = document.querySelectorAll('.product');
+const quantity = document.querySelectorAll('.product__quantity-control');
 const add = document.querySelectorAll('.product__add');
 
-quantity.forEach((product) => {
-const countProducts = product.querySelector('.product__quantity-value');
-
-const high = product.querySelector('.product__quantity-control_inc')
-  high.addEventListener('click', () => {
-    countProducts.textContent = +countProducts.textContent + 1;
-  });
-
-const low = product.querySelector('.product__quantity-control_dec');
-  low.addEventListener('click', () => {
-    countProducts.textContent = +countProducts.textContent === 1 ? 1 : +countProducts.textContent - 1;
-  });
-});
-
-for (let prop of add) {
-    prop.addEventListener('click', addCart);
+for (let button of quantity) {
+    button.addEventListener('click', change);
+}
+for (let button of add) {
+    button.addEventListener('click', addToCart);
 }
 
- function addCart (event) {
-    const prod = event.target.closest('.product');
-    const id = prod.dataset.id;
-    const count = + event.target.parentNode.querySelector('.product__quantity-value').innerText;
+function change(event) {
+    let value = event.target.parentNode.querySelector('.product__quantity-value');
+    let count = +value.innerText;
 
-    for (let prop of cart.children) {
-        if (prop.dataset.id === id) {
+    if (event.target.classList.contains('product__quantity-control_inc')) {
+        count++;
+        value.innerText = count;
+    } else {
+        if (count > 1) {
+            count--;
+            value.innerText = count;
+        } else {
+            value.innerText = 1;
+        }
+    }
+}
+
+function addToCart(event) {
+    const product = event.target.closest('.product');
+    const id = product.dataset.id;
+    const productQuantity = +event.target.parentNode.querySelector('.product__quantity-value').innerText;
+
+    for (let item of cart.children) {
+        if (item.dataset.id === id) {
             let productCount = item.querySelector('.cart__product-count');
-            let total = + productCount.innerText;
-            productCount.innerText = total + count;
+            let total = +productCount.innerText;
+            productCount.innerText = total + productQuantity;
             return false;
         }
     }
 
-    const img = prod.querySelector('.product__image').src;
-    const value = prod.querySelector('.product__quantity-value').innerText;
-    const prodCart = `<div class="cart__product" data-id="${id}">
-                                <img class="cart__product-image" src="${img}">
-                                <div class="cart__product-count">${value}</div>
+    const image = product.querySelector('.product__image').src;
+    const count = product.querySelector('.product__quantity-value').innerText;
+    const productToCart = `<div class="cart__product" data-id="${id}">
+                                <img class="cart__product-image" src="${image}">
+                                <div class="cart__product-count">${count}</div>
                             </div>`;
-    cart.insertAdjacentHTML('beforeend', prodCart);
+    cart.insertAdjacentHTML('beforeend', productToCart);
 }

@@ -6,7 +6,7 @@ add.addEventListener('click', (event) =>  {
     const text = input.value;
     const list = document.getElementById('tasks__list');
     let input2 = document.createElement('div');
-    input2.classList.add ('task');
+    input2.classList.add ('task-new');
     input2.innerHTML +=`
         <div class="task">
             <div class="task__title">` + text + `</div>
